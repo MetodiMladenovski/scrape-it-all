@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from IPython.display import HTML
 from datetime import date
 import warnings
+import matplotlib.pyplot as plt
 
 # Setting up 'requests' to make HTTPS requests properly takes some extra steps... we'll skip them for now.
 requests.packages.urllib3.disable_warnings()
@@ -38,28 +39,21 @@ for i in range(0, len(phone_prices)):
                                .replace(",", "")
                                .replace(".", "")))
 
-print(p_prices_simple)
+matrix = []
+for i in range(0, len(p_titles_simple)):
+    node = {'Title': p_titles_simple[i], 'Type': p_types_simple[i], 'Price': p_prices_simple[i]}
+    matrix.append(node)
 
-# card_classes = soup.seleact('.Card-eyebrow')
-#
-# classes = []
-# for i in range(0, len(card_classes)):
-#     classes.append(card_classes[i].select_one('div').text)
-#
-# for i in range(len(card_classes), len(card_titles)):
-#     classes.append(classes[len(card_classes) - 1])
-#
-# matrix = []
-# for i in range(0, len(classes)):
-#     node = {'Title': titles[i], 'Date': times[i], 'Class': classes[i]}
-#     matrix.append(node)
-#
-# df = pd.DataFrame(matrix)
-#
-# matrix = []
-# for i in range(0, len(classes)):
-#     matrix.append([titles[i], times[i], classes[i]])
-#
-# df_new = pd.DataFrame(np.array(matrix), columns=['Title', 'Date', 'Class'])
-#
-# print(df_new)
+df = pd.DataFrame(matrix)
+
+stats = df.describe()
+mean = df['Price'].mean()
+median = df['Price'].median()
+std = df['Price'].std()
+minimum = df['Price'].min()
+maximum = df['Price'].max()
+
+df.hist(column='Price')
+plt.show()
+
+bargraph = df.plot.bar(x='Type', y='Price')
